@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+
+    AddDefaultCharset utf-8
+    RewriteEngine On
+    Options +SymLinksIfOwnerMatch
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteBase  /public/
+
+    RewriteRule !\.(js|jpeg|css|jpg|html|min\.css)$ index.php [QSA,L]
+
+
+
+
+</IfModule>
