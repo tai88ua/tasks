@@ -1,18 +1,19 @@
-<!DOCTYPE html>
+{% include 'header.html.twig' %}
 
 <title>Register</title>
 
-{% block body %}
-    <h1>Register</h1>
-
+<div class="row justify-content-center" id="middle">
     {{ form_start(registrationForm) }}
+        <h1>Register</h1>
         {{ form_row(registrationForm.name) }}
         {{ form_row(registrationForm.email) }}
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'
         }) }}
         {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
+    <br>
+        <button type="submit"  class="btn btn-primary">Register</button>
     {{ form_end(registrationForm) }}
-{% endblock %}
+</div>
+
+{% include 'footer.html.twig' %}

@@ -1,0 +1,17 @@
+#middle {
+    margin-top: 100px;
+}
+
+#middle div{
+    max-width: 300px;
+}
+
+#header span {
+    width: 85%;
+    display: inline-block;
+}
+
+#header a {
+    width: 10%;
+    display: inline-block;
+}

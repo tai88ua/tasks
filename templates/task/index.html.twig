@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<title>Task </title>
+
+{% block body %}
+    {% if not task %}
+    <div class="alert alert-danger" role="alert">
+        <strong> Task not found! </strong>
+    </div>
+
+    {% else %}
+        Title: {{  task.title }} <br/>
+        Description: {{ task.description }} <br/>
+        Date: {{ task.date }}<br/>
+    {% endif %}
+{% endblock %}

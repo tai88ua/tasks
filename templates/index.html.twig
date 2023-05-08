@@ -1,3 +1,13 @@
+{% include 'header.html.twig' %}
 
 
-{{ message }}
+<div class="row justify-content-center" id="middle">
+    <div>
+        <a class="btn btn-primary" href="{{ path('app_login') }}" role="button" >Login</a>
+        OR
+        <a class="btn btn-secondary"  href="{{ path('app_register') }}" role="button" >Registration</a>
+    </div>
+</div>
+
+
+{% include 'footer.html.twig' %}
