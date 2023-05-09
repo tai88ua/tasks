@@ -2,27 +2,33 @@
 
 namespace App\Dto;
 
+use DateTimeInterface;
+
 class TaskDto
 {
-    private $id;
+    public const STATUS_NEW = 'new';
+    public const STATUS_INPROGRESS = 'in progress';
+    public const STATUS_DONE = 'done';
+
+    private ?int $id = null;
     private string $title;
     private string $description;
-    private string $date;
+    private DateTimeInterface $date;
     private UserDto $user;
     private string $status;
 
     /**
-     * @return mixed
+     * @return ?int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param ?int $id
      */
-    public function setId($id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -60,17 +66,17 @@ class TaskDto
     }
 
     /**
-     * @return string
+     * @return DateTimeInterface
      */
-    public function getDate(): string
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }
 
     /**
-     * @param string $date
+     * @param DateTimeInterface $date
      */
-    public function setDate(string $date): void
+    public function setDate(DateTimeInterface $date): void
     {
         $this->date = $date;
     }

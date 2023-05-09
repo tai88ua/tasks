@@ -22,9 +22,12 @@ class MainController extends AbstractController
     }
 
     #[Route('/', name: 'main_page')]
-    public function test() : Response
+    public function main(): Response
     {
-        //if login redirect to task list
+        if ($this->user) {
+            return $this->redirectToRoute('app_task_list_page');
+        }
+
         return $this->render('index.html.twig', [
             'title_page' => 'Main page',
             'user'       => $this->user,

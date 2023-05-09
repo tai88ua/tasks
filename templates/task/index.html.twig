@@ -1,16 +1,28 @@
-<!DOCTYPE html>
+{% include 'header.html.twig' %}
 
-<title>Task </title>
 
-{% block body %}
-    {% if not task %}
-    <div class="alert alert-danger" role="alert">
-        <strong> Task not found! </strong>
+<div class="container">
+
+    <div class="row justify-content-start">
+
+
+        {% if task %}
+            {{ form_start(form) }}
+
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.date) }}
+            {{ form_row(form.status) }}
+
+            <button type="submit"  class="btn btn-primary">Update task</button>
+
+            {{ form_end(form) }}
+        {% else %}
+            <h2>Task not found! </h2>
+        {% endif %}
+
     </div>
 
-    {% else %}
-        Title: {{  task.title }} <br/>
-        Description: {{ task.description }} <br/>
-        Date: {{ task.date }}<br/>
-    {% endif %}
-{% endblock %}
+</div>
+
+{% include 'footer.html.twig' %}

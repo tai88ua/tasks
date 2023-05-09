@@ -4,6 +4,7 @@ namespace App\Dto;
 
 class UserDto
 {
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
     private int $id;
     private string $name;
     private string $email;
