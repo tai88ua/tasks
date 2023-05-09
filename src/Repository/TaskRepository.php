@@ -40,7 +40,7 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByCriteria(?int $userId, CriteriaDto $criteriaDto): array
+    public function findByCriteria(?int $userId, CriteriaDto $criteriaDto, $limit = 50): array
     {
         $q = $this->createQueryBuilder('t');
 
@@ -68,6 +68,8 @@ class TaskRepository extends ServiceEntityRepository
         } else {
             $q->orderBy('t.id', $order);
         }
+
+        $q->setMaxResults($limit);
 
 
         return $q->getQuery()->getResult();
