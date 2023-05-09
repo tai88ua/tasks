@@ -7,7 +7,18 @@
             <a href="{{ path('app_task_add_page') }}" class="btn btn-success" >Add task</a>
         </div>
         <div class="col-10">
-            <span>sorted by : name or id or date  | filter by : dateStart  or dateEnd or status | search</span>
+
+            {{ form_start(searchForm) }}
+                {{ form_row(searchForm.sortedBy) }}
+                {{ form_row(searchForm.sortASC) }}
+                {{ form_row(searchForm.filterByDate) }}
+                {{ form_row(searchForm.filterByStatus) }}
+
+            <button id="find-button" type="submit"  class="btn btn-primary col-1">Find</button>
+
+            {{ form_end(searchForm) }}
+
+
         </div>
     </div>
     <div class="row">

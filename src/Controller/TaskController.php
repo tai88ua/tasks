@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Dto\CriteriaDto;
 use App\Dto\TaskDto;
+use App\Form\CriteriaType;
 use App\Form\TaskType;
 use App\Service\TaskService;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,14 +44,24 @@ class TaskController extends MainController
     }
 
     #[Route('/task/list', name: 'app_task_list_page')]
-    public function listTasks(TaskService $taskService): Response
+    public function listTasks(TaskService $taskService, Request $request): Response
     {
-        $tasks = $taskService->getTasks($this->user);
+
+        $criteria = new CriteriaDto();
+        $form = $this->createForm(CriteriaType::class, $criteria);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tasks = $taskService->getTasks($this->user, $form->getData());
+        } else {
+            $tasks = $taskService->getTasks($this->user, $criteria);
+        }
 
         return $this->render('task/list.html.twig', [
             'title_page'    => 'List Task',
             'user'          => $this->user,
             'tasks'         => $tasks,
+            'searchForm'    => $form
         ]);
     }
 

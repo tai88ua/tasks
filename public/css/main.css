@@ -20,3 +20,11 @@
     width: 10%;
     display: inline-block;
 }
+
+#criteria_filterByDate {
+    display: inline-block;
+}
+
+#find-button {
+    margin: 0;
+}

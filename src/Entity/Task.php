@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
-    const STATUSES = ['new', 'in progress', 'done'];
+    public const STATUSES = ['new', 'in progress', 'done'];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

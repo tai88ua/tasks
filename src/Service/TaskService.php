@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Dto\CriteriaDto;
 use App\Dto\TaskDto;
 use App\Dto\UserDto;
 use App\Entity\Task;
@@ -19,14 +20,8 @@ class TaskService
 
     public function getTask(int $id, ?UserDto $userDto): ?TaskDto
     {
-        $taskRegistry = $this->managerRegistry->getRepository(Task::class);
-
-        $criteria = ['id' => $id];
-        if (!in_array(UserDto::ROLE_ADMIN, $userDto->getRoles())) {
-            $criteria['user'] = $userDto->getId();
-        }
-
-        $taskModel = $taskRegistry->findOneBy($criteria);
+        $criteria = $this->makeCriteria($id, $userDto);
+        $taskModel = $this->managerRegistry->getRepository(Task::class)->findOneBy($criteria);
 
         if (!$taskModel) {
             return null;
@@ -35,20 +30,16 @@ class TaskService
         return $this->makeTask($taskModel);
     }
 
-    public function getTasks(?UserDto $userDto): array
+    public function getTasks(?UserDto $userDto, ?CriteriaDto $criteriaDto = null): array
     {
         if (!$userDto) {
             return [];
         }
 
-        $taskRegistry = $this->managerRegistry->getRepository(Task::class);
+        $criteria = $this->makeCriteria(null, $userDto);
 
-        $criteria = [];
-        if (!in_array(UserDto::ROLE_ADMIN, $userDto->getRoles())) {
-            $criteria['user'] = $userDto->getId();
-        }
-
-        $taskModels = $taskRegistry->findBy($criteria);
+        $taskModels = $this->managerRegistry->getRepository(Task::class)
+            ->findByCriteria($criteria['user'] ?? null, $criteriaDto);
 
         $items = [];
         foreach ($taskModels as $taskModel) {
@@ -56,6 +47,56 @@ class TaskService
         }
 
         return $items;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function deleteTask(int $id, ?UserDto $userDto): bool
+    {
+        if (!$userDto) {
+            throw new \Exception('User not found!');
+        }
+
+        $criteria = $this->makeCriteria($id, $userDto);
+        $taskModel = $this->managerRegistry->getRepository(Task::class)->findOneBy($criteria);
+
+        if (!$taskModel) {
+            throw new \Exception('Task not found!');
+        }
+
+        $this->managerRegistry->getManager()->remove($taskModel);
+        $this->managerRegistry->getManager()->flush();
+
+        return true;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function createOrUpdateTask(TaskDto $dto, UserDto $userDto): void
+    {
+        if ($dto->getId() !== null) {
+            $criteria = $this->makeCriteria($dto->getId(), $userDto);
+            $taskModel = $this->managerRegistry->getRepository(Task::class)->findOneBy($criteria);
+        } else {
+            $taskModel = new Task();
+            $userRegistry = $this->managerRegistry->getRepository(User::class);
+            $userModel = $userRegistry->find($userDto->getId());
+            $taskModel->setUser($userModel);
+        }
+
+        $taskModel->setTitle($dto->getTitle());
+        $taskModel->setDescription($dto->getDescription());
+        $date = $dto->getDate();
+        if ($date::class == \DateTime::class) {
+            $date = \DateTimeImmutable::createFromMutable($date);
+        }
+        $taskModel->setDate($date);
+        $taskModel->setStatus($dto->getStatus());
+
+        $this->managerRegistry->getManager()->persist($taskModel);
+        $this->managerRegistry->getManager()->flush();
     }
 
     private function makeTask(Task $taskModel): TaskDto
@@ -77,63 +118,18 @@ class TaskService
         return $dto;
     }
 
-
-    /**
-     * @throws \Exception
-     */
-    public function deleteTask(int $id, ?UserDto $userDto): bool
+    private function makeCriteria(?int $taskId, ?UserDto $userDto): array
     {
-        if (!$userDto) {
-            throw new \Exception('User not found!');
+        $criteria = [];
+
+        if ($taskId) {
+            $criteria['id'] = $taskId;
         }
 
-        $criteria = ['id' => $id];
         if (!in_array(UserDto::ROLE_ADMIN, $userDto->getRoles())) {
             $criteria['user'] = $userDto->getId();
         }
 
-        $taskModel = $this->managerRegistry->getRepository(Task::class)->findOneBy($criteria);
-
-        if (!$taskModel) {
-            throw new \Exception('Task not found!');
-        }
-
-        $this->managerRegistry->getManager()->remove($taskModel);
-        $this->managerRegistry->getManager()->flush();
-
-        return true;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function createOrUpdateTask(TaskDto $dto, UserDto $userDto): void
-    {
-        if ($dto->getId() !== null) {
-            $criteria = ['id' => $dto->getId()];
-            if (!in_array(UserDto::ROLE_ADMIN, $userDto->getRoles())) {
-                $criteria['user'] = $userDto->getId();
-            }
-            $taskModel = $this->managerRegistry->getRepository(Task::class)->findOneBy($criteria);
-        } else {
-            $taskModel = new Task();
-
-            $userRegistry = $this->managerRegistry->getRepository(User::class);
-            $userModel = $userRegistry->find($userDto->getId());
-
-            $taskModel->setUser($userModel);
-        }
-
-        $taskModel->setTitle($dto->getTitle());
-        $taskModel->setDescription($dto->getDescription());
-        $date = $dto->getDate();
-        if ($date::class == \DateTime::class) {
-            $date = \DateTimeImmutable::createFromMutable($date);
-        }
-        $taskModel->setDate($date);
-        $taskModel->setStatus($dto->getStatus());
-
-        $this->managerRegistry->getManager()->persist($taskModel);
-        $this->managerRegistry->getManager()->flush();
+        return $criteria;
     }
 }
