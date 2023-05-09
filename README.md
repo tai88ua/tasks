@@ -1,8 +1,11 @@
 # tasks
 
+### install
 
-- docker-compose build 
-- docker-compose up
-- composer install 
-- create db 
-- run migrations
+- composer install
+- docker-compose build `- in __docker__ directory `
+- docker-compose up    `- in __docker__ directory`
+- php bin/console doctrine:database:create `- create DB in docker docker container, Like:` 
+    __docker exec  docker_php_1 bin/console doctrine:database:create__
+- bin/console doctrine:migrations:migrate `- run  migrates in docker docker container to`
+- go to http://localhost:8091/ 
