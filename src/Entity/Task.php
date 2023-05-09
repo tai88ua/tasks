@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
+#[ORM\Index(columns: ['status'], name: 'status_idx')]
+#[ORM\Index(columns: ['date'], name: 'date_idx')]
 class Task
 {
     public const STATUSES = ['new', 'in progress', 'done'];
