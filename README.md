@@ -3,6 +3,7 @@
 ### install
 
 - composer install
+- cp .env .env.local 
 - docker-compose build `- in __docker__ directory `
 - docker-compose up    `- in __docker__ directory`
 - php bin/console doctrine:database:create `- create DB in docker docker container, Like:` 
